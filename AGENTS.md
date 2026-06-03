@@ -20,7 +20,7 @@ Current plan: `docs/superpowers/plans/2026-06-03-clickempire-phase1.md`
 
 - **Frontend:** Electron + React 18 + TypeScript + Tailwind CSS (via electron-vite)
 - **Backend:** Node.js + Express + Socket.io
-- **Database:** better-sqlite3 (local save), server is stateless per session
+- **Save:** electron-store (local JSON save), server is stateless per session
 - **Tests:** Vitest + @testing-library/react
 - **Language:** TypeScript everywhere, strict mode
 
@@ -34,7 +34,7 @@ clickempire/
 ├── src/
 │   ├── engine/       # Pure TS game logic (no React, fully testable)
 │   ├── empires/      # One folder per empire (bedroom/, casino/, esport/)
-│   ├── save/         # SQLite save/load via IPC
+│   ├── save/         # electron-store save/load via IPC
 │   ├── multiplayer/  # Socket.io client
 │   ├── components/   # Reusable React UI components
 │   └── screens/      # Full-screen views (one per empire)

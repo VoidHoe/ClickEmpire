@@ -4,6 +4,18 @@ Newest entry on top. Update this at the end of every session before pushing.
 
 ---
 
+## 2026-06-04 — Void (electron launch fixed)
+
+- Fixed electron-vite config: set `root: resolve('.')` so renderer finds `index.html` at project root
+- Removed `"type": "module"` from package.json — was causing preload to output `.mjs` instead of `.js`
+- Created `src/index.css` with Tailwind directives (was missing, causing white screen)
+- Moved `TrapType` client-side into `SocketClient.ts` — removed broken cross-boundary import from `server/TrapHandler`
+- App now launches: Electron window opens with game UI
+- NEXT: Phase 2 — Casino empire + Esports empire
+- BLOCKED: Nothing — push this and share repo with friend
+
+---
+
 ## 2026-06-03 — Void (Phase 1 complete)
 
 - Implemented full Phase 1: scaffold, game engine, upgrade system, bedroom empire, prestige challenge, save/load, bedroom UI, Socket.io server, multiplayer client + traps

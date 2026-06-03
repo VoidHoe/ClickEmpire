@@ -19,10 +19,9 @@ import { saveGame, loadGame } from './save/SaveSystem'
 import { CurrencyDisplay } from './components/CurrencyDisplay'
 import { BedroomScreen } from './screens/BedroomScreen'
 import { PrestigeModal } from './components/PrestigeModal'
-import { SocketClient, OnlinePlayer } from './multiplayer/SocketClient'
+import { SocketClient, OnlinePlayer, TrapType } from './multiplayer/SocketClient'
 import { PlayerList } from './components/PlayerList'
 import { TrapNotification } from './components/TrapNotification'
-import { TrapType } from '../server/TrapHandler'
 
 export default function App() {
   const [gameState, setGameState] = useState<GameState>(createInitialState)

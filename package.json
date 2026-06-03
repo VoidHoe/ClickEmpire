@@ -2,7 +2,7 @@
   "name": "clickempire",
   "version": "0.1.0",
   "description": "Online multiplayer incremental game",
-  "main": "dist-electron/main.js",
+  "main": "out/main/index.js",
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",

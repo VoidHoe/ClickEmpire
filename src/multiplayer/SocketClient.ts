@@ -1,5 +1,6 @@
 import { io, Socket } from 'socket.io-client'
-import { TrapType } from '../../server/TrapHandler'
+
+export type TrapType = 'popup_bomb' | 'cursor_wobble' | 'fake_lag' | 'rick_roll'
 
 export interface OnlinePlayer {
   id: string
