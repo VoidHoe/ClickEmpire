@@ -1,9 +1,13 @@
 export interface BedroomState {
-  upgrades: []
+  upgrades: unknown[]
 }
 
 export function createInitialBedroomState(): BedroomState {
   return { upgrades: [] }
+}
+
+function deepCopyBedroom(bedroom: BedroomState): BedroomState {
+  return { ...bedroom, upgrades: [...bedroom.upgrades] }
 }
 
 export interface GameState {
@@ -32,11 +36,12 @@ export class GameEngine {
   private onUpdate: (state: GameState) => void
 
   constructor(initialState: GameState, onUpdate: (state: GameState) => void) {
-    this.state = { ...initialState }
+    this.state = { ...initialState, bedroom: deepCopyBedroom(initialState.bedroom) }
     this.onUpdate = onUpdate
   }
 
   start() {
+    if (this.tickInterval) return
     this.tickInterval = setInterval(() => this.tick(), 1000)
   }
 
@@ -50,26 +55,28 @@ export class GameEngine {
   private tick() {
     this.state = {
       ...this.state,
+      bedroom: deepCopyBedroom(this.state.bedroom),
       currency: this.state.currency + this.state.passiveIncome,
       lastTick: Date.now(),
     }
-    this.onUpdate({ ...this.state })
+    this.onUpdate({ ...this.state, bedroom: deepCopyBedroom(this.state.bedroom) })
   }
 
   click() {
     this.state = {
       ...this.state,
+      bedroom: deepCopyBedroom(this.state.bedroom),
       currency: this.state.currency + this.state.clickValue,
     }
-    this.onUpdate({ ...this.state })
+    this.onUpdate({ ...this.state, bedroom: deepCopyBedroom(this.state.bedroom) })
   }
 
   getState(): GameState {
-    return { ...this.state }
+    return { ...this.state, bedroom: deepCopyBedroom(this.state.bedroom) }
   }
 
   setState(state: GameState) {
-    this.state = { ...state }
+    this.state = { ...state, bedroom: deepCopyBedroom(state.bedroom) }
   }
 
   updatePassiveIncome(income: number) {
