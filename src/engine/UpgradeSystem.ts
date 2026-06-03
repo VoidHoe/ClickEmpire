@@ -14,7 +14,7 @@ export function calculateUpgradeCost(upgrade: Upgrade): number {
 }
 
 export function applyUpgrade(upgrade: Upgrade): Upgrade {
-  if (upgrade.level >= upgrade.maxLevel) return upgrade
+  if (upgrade.level >= upgrade.maxLevel) return { ...upgrade }
   return { ...upgrade, level: upgrade.level + 1 }
 }
 
