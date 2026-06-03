@@ -19,6 +19,10 @@ import { saveGame, loadGame } from './save/SaveSystem'
 import { CurrencyDisplay } from './components/CurrencyDisplay'
 import { BedroomScreen } from './screens/BedroomScreen'
 import { PrestigeModal } from './components/PrestigeModal'
+import { SocketClient, OnlinePlayer } from './multiplayer/SocketClient'
+import { PlayerList } from './components/PlayerList'
+import { TrapNotification } from './components/TrapNotification'
+import { TrapType } from '../server/TrapHandler'
 
 export default function App() {
   const [gameState, setGameState] = useState<GameState>(createInitialState)
@@ -27,6 +31,10 @@ export default function App() {
     createPrestigeChallenge
   )
   const engineRef = useRef<GameEngine | null>(null)
+  const [onlinePlayers, setOnlinePlayers] = useState<OnlinePlayer[]>([])
+  const [incomingTrap, setIncomingTrap] = useState<{ type: TrapType; from: string } | null>(null)
+  const [mySocketId, setMySocketId] = useState('')
+  const socketRef = useRef<SocketClient | null>(null)
 
   useEffect(() => {
     let engine: GameEngine
@@ -40,10 +48,19 @@ export default function App() {
       engineRef.current = engine
       engine.start()
       setGameState(initialState)
+      const username = `Player_${Math.floor(Math.random() * 9000) + 1000}`
+      const client = new SocketClient(
+        (trapType, fromUsername) => setIncomingTrap({ type: trapType, from: fromUsername }),
+        (players) => setOnlinePlayers(players)
+      )
+      socketRef.current = client
+      client.connect(username)
+      setTimeout(() => setMySocketId(client.getSocketId()), 500)
     })
 
     return () => {
       engine?.stop()
+      socketRef.current?.disconnect()
     }
   }, [])
 
@@ -84,6 +101,10 @@ export default function App() {
     alert(`Prestige ${newPrestigeCount}! You now start with ${bonus.freeMiners} free miners.`)
   }
 
+  function handleSendTrap(toId: string, trapType: TrapType) {
+    socketRef.current?.sendTrap(toId, trapType)
+  }
+
   function handlePurchaseUpgrade(upgradeId: string) {
     if (!engineRef.current) return
 
@@ -114,11 +135,18 @@ export default function App() {
         passiveIncome={gameState.passiveIncome}
         clickValue={gameState.clickValue}
       />
-      <div className="flex-1 overflow-hidden">
-        <BedroomScreen
-          state={gameState}
-          onPurchaseUpgrade={handlePurchaseUpgrade}
-          onOpenPrestige={() => setShowPrestige(true)}
+      <div className="flex flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden">
+          <BedroomScreen
+            state={gameState}
+            onPurchaseUpgrade={handlePurchaseUpgrade}
+            onOpenPrestige={() => setShowPrestige(true)}
+          />
+        </div>
+        <PlayerList
+          players={onlinePlayers}
+          mySocketId={mySocketId}
+          onSendTrap={handleSendTrap}
         />
       </div>
       {showPrestige && (
@@ -127,6 +155,13 @@ export default function App() {
           currentCurrency={gameState.currency}
           onStart={() => setPrestigeChallenge(startPrestigeChallenge())}
           onClose={() => setShowPrestige(false)}
+        />
+      )}
+    {incomingTrap && (
+        <TrapNotification
+          trapType={incomingTrap.type}
+          fromUsername={incomingTrap.from}
+          onDismiss={() => setIncomingTrap(null)}
         />
       )}
     </div>
