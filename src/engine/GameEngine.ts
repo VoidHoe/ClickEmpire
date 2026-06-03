@@ -1,13 +1,8 @@
-export interface BedroomState {
-  upgrades: unknown[]
-}
-
-export function createInitialBedroomState(): BedroomState {
-  return { upgrades: [] }
-}
+import { BedroomState, createInitialBedroomState } from '../empires/bedroom/BedroomEmpire'
+import { Upgrade } from './UpgradeSystem'
 
 function deepCopyBedroom(bedroom: BedroomState): BedroomState {
-  return { ...bedroom, upgrades: [...bedroom.upgrades] }
+  return { ...bedroom, upgrades: bedroom.upgrades.map((u: Upgrade) => ({ ...u })) }
 }
 
 export interface GameState {
