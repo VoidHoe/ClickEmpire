@@ -15,7 +15,11 @@ export function canSendTrap(fromId: string, trapType: TrapType): boolean {
   const key = `${fromId}:${trapType}`
   const lastSent = TRAP_COOLDOWNS.get(key)
   if (!lastSent) return true
-  return Date.now() - lastSent >= COOLDOWN_MS
+  if (Date.now() - lastSent >= COOLDOWN_MS) {
+    TRAP_COOLDOWNS.delete(key)
+    return true
+  }
+  return false
 }
 
 export function recordTrapSent(fromId: string, trapType: TrapType): void {

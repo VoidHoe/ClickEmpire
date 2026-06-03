@@ -34,7 +34,7 @@ io.on('connection', (socket) => {
       return
     }
 
-    const target = sessions.getAllPlayers().find(p => p.id === toId)
+    const target = sessions.getPlayer(toId)
     if (!target) return
 
     recordTrapSent(socket.id, trapType)
