@@ -1,6 +1,18 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import Store from 'electron-store'
+
+const store = new Store()
+
+ipcMain.handle('save:write', (_event, key: string, data: string) => {
+  store.set(key, data)
+  return { success: true }
+})
+
+ipcMain.handle('save:read', (_event, key: string) => {
+  return store.get(key, null)
+})
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
